@@ -57,6 +57,54 @@ class UI {
 
 }
 
+// Local Storage Class
+class Store {
+
+    static getCourses() {
+        let courses;
+        if(localStorage.getItem('courses') === null) {
+            courses = [];
+        } else {
+            courses = JSON.parse(localStorage.getItem('courses'));
+        }
+        return courses;
+    }
+
+    static displayCourses() {
+        const courses = Store.getCourses();
+
+        courses.forEach(function(course){
+            const ui = new UI;
+
+            // Add course to UI
+            ui.addCourseToList(course);
+        });
+
+    }
+
+    static addCourse(course) {
+        const courses = Store.getCourses();
+
+        courses.push(course);
+
+        localStorage.setItem('courses', JSON.stringify(courses));
+    }
+    static removeCourse(isbn) {
+        const courses = Store.getCourses();
+
+        courses.forEach(function(course, index){
+            if(course.isbn === isbn) {
+                courses.splice(index, 1);
+            }
+        });
+
+        localStorage.setItem('courses', JSON.stringify(courses));
+    }
+}
+
+// DOM Load Event
+document.addEventListener('DOMContentLoaded', Store.displayCourses);
+
 // Event Listeners for add course
 document.getElementById('course-form').addEventListener('submit', 
 function(e){
@@ -78,6 +126,9 @@ function(e){
         // Add course to list
         ui.addCourseToList(course);
 
+        // add to LocalStorage
+        Store.addCourse(course);
+
         // show success
         ui.showAlert('Course Added!', 'success');
     
@@ -97,6 +148,9 @@ document.getElementById('course-list').addEventListener('click', function(e){
 
     // Delete course
     ui.deleteCourse(e.target)
+
+    // remove from LocalStorege
+    Store.removeCourse(e.target.parentElement.previousElementSibling.textContent);
 
     // show message
     ui.showAlert('Course Removed!', 'success');
