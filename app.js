@@ -42,6 +42,13 @@ UI.prototype.showAlert = function(message, className) {
     }, 3000);
 }
 
+// Delete Course
+UI.prototype.deleteCourse = function(target){
+    if(target.className === 'delete') {
+        target.parentElement.parentElement.remove();
+    }
+}
+
 // Clear fields
 UI.prototype.clearFields = function(){
     document.getElementById('title').value = '';
@@ -52,7 +59,7 @@ UI.prototype.clearFields = function(){
 
 
 
-// Event Listeners
+// Event Listeners for add course
 document.getElementById('course-form').addEventListener('submit', 
 function(e){
     // Get form values
@@ -82,4 +89,19 @@ function(e){
 
 
     e.preventDefault();
-})
+});
+
+// Event Listner for delete
+document.getElementById('course-list').addEventListener('click', function(e){
+    
+    // Instantiate UI
+    const ui = new UI();
+
+    // Delete course
+    ui.deleteCourse(e.target)
+
+    // show message
+    ui.showAlert('Course Removed!', 'success');
+
+    e.preventDefault();
+});
