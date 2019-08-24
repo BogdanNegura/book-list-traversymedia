@@ -21,6 +21,27 @@ UI.prototype.addCourseToList = function(course) {
     `;
     list.appendChild(row);
 }
+
+// Show Error
+UI.prototype.showAlert = function(message, className) {
+    // create div
+    const div = document.createElement('div');
+    // add classes
+    div.className = `alert ${className}`;
+    div.appendChild(document.createTextNode(message));
+    // Get parent
+    const container = document.querySelector('.container');
+    // get form
+    const form = document.querySelector('#course-form');
+    // insert alert
+    container.insertBefore(div, form);
+
+    // Timeout after 3s
+    setTimeout(function(){
+        document.querySelector('.alert').remove();
+    }, 3000);
+}
+
 // Clear fields
 UI.prototype.clearFields = function(){
     document.getElementById('title').value = '';
@@ -44,12 +65,21 @@ function(e){
 
     // Instantiate UI
     const ui = new UI();
+    // Validate
+    if(title === '' || author === '' || isbn === '') {
+        // Error alert
+        ui.showAlert('Please fill in all fields', 'error');
+    } else {
+        // Add course to list
+        ui.addCourseToList(course);
 
-    // Add course to list
-    ui.addCourseToList(course);
+        // show success
+        ui.showAlert('Course Added!', 'success');
+    
+        // Clear fields
+        ui.clearFields();
+    }
 
-    // Clear fields
-    ui.clearFields();
 
     e.preventDefault();
 })
